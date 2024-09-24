@@ -42,7 +42,9 @@ if __name__ == '__main__':
     # Wait for logseq to quit
     my_pid = -1
     pids = psutil.pids()
-    while my_pid == -1:
+    trial_count = 0
+    max_trials = 10  # Set a limit for the number of trials
+    while my_pid == -1 and trial_count < max_trials:
         for pid in pids:
             try:
                 proc = psutil.Process(pid)
@@ -52,6 +54,13 @@ if __name__ == '__main__':
                 my_pid = pid
                 print(proc.name())
                 break
+        trial_count += 1
+        time.sleep(1)  # Add a small delay to avoid busy waiting
+
+    if my_pid == -1:
+        ctypes.windll.user32.MessageBoxW(0, "Process not found after too many trials", "Warning: Process Not Found", 1)
+        exit(0)
+        
 
     # Loop until can't find this pid
     while True:
