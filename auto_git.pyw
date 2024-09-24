@@ -2,7 +2,8 @@ import time
 import psutil
 from git import Repo
 import subprocess
-import ctypes  # An included library with Python install.
+import ctypes
+
 PATH_OF_GIT_REPO = r'...\.git' # Your git repo path here.
 PATH_OF_EXE = r'...\XXX.exe' # Your program to be executed here.
 NAME_OF_PROCESS = 'Logseq' # The process name here.
