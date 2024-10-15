@@ -16,7 +16,7 @@ default_config = {
 }
 
 # Try to load from JSON, use defaults if file doesn't exist or is invalid
-config_file = 'config.json'
+config_file = './config.json'
 if os.path.exists(config_file):
     try:
         with open(config_file, 'r') as f:
@@ -85,12 +85,26 @@ if __name__ == '__main__':
         
 
     # Loop until can't find this pid
-    while True:
-        try:
-            proc = psutil.Process(my_pid)
-            time.sleep(1)
-        except Exception:
-            break
+    while my_pid != -1:
+        while True:
+            try:
+                proc = psutil.Process(my_pid)
+                time.sleep(1)
+            except Exception:
+                break
+        my_pid = -1
+        time.sleep(1)
+        pids = psutil.pids()
+        for pid in pids:
+            try:
+                proc = psutil.Process(pid)
+            except Exception:
+                continue
+            if NAME_OF_PROCESS in proc.name():
+                my_pid = pid
+                print(proc.name())
+                break
 
     # print('Git pushing...')
     git_push()
+    ctypes.windll.user32.MessageBoxW(0, "Git push succeed.", "AutoGit", 1)
